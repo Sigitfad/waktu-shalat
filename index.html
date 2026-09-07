@@ -63,6 +63,8 @@
     .pickers select{width:100%;min-width:0;}
 
     .next-card{text-align:center;}
+    .next-line{white-space:nowrap;font-size:clamp(11px,3.8vw,16px);}
+    .next-line .pill{margin:0 3px;padding:3px 8px;}
   }
 
   .left-col{display:flex;flex-direction:column;gap:22px;}
@@ -150,7 +152,7 @@
   @media (max-width:420px){
     .tick{width:52px;}
     .tick .lbl{font-size:10px;}
-    .row .name-ar{display:none;}
+    .row .name-ar{display:inline;}
     select{min-width:140px;}
   }
 </style>
