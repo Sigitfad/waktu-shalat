@@ -88,9 +88,9 @@
   .analog-tick-major{stroke:#12141a;stroke-width:2.6;}
   .analog-tick-minor{stroke:#12141a;stroke-width:1.1;opacity:0.75;}
   .analog-number{font-family:Georgia,"Palatino Linotype",serif;font-size:16px;fill:#12141a;font-weight:700;}
-  .analog-hour-hand{stroke:#12141a;stroke-width:6.5;stroke-linecap:round;transform-origin:110px 110px;}
-  .analog-minute-hand{stroke:#12141a;stroke-width:4;stroke-linecap:round;transform-origin:110px 110px;}
-  .analog-second-hand{stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;transform-origin:110px 110px;}
+  .analog-hour-hand{stroke:#12141a;stroke-width:6.5;stroke-linecap:round;transform-origin:110px 110px;transition:transform 0.2s cubic-bezier(.4,2.2,.6,1);}
+  .analog-minute-hand{stroke:#12141a;stroke-width:4;stroke-linecap:round;transform-origin:110px 110px;transition:transform 0.2s cubic-bezier(.4,2.2,.6,1);}
+  .analog-second-hand{stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;transform-origin:110px 110px;transition:transform 0.12s cubic-bezier(.4,2.6,.6,1);}
   .analog-center-ring{fill:#fdfaf2;stroke:#12141a;stroke-width:1.4;}
   .analog-center{fill:#12141a;}
 
@@ -621,6 +621,8 @@
     var wib = nowWIB();
     var nowH = wib.getHours() + wib.getMinutes()/60 + wib.getSeconds()/3600;
 
+    updateAnalogClock();
+
     dateLine.textContent = DAYS_ID[wib.getDay()] + ", " + wib.getDate() + " " + MONTHS_ID[wib.getMonth()] + " " + wib.getFullYear();
     clockLine.textContent = pad(wib.getHours()) + ":" + pad(wib.getMinutes()) + ":" + pad(wib.getSeconds());
 
@@ -695,21 +697,20 @@
     tick();
   }
 
-  // Jam analog bergerak halus & kontinu (bukan patah-patah tiap detik) — dihitung ulang
-  // di setiap frame animasi dari waktu WIB yang sama persis dengan jam digital, sehingga
-  // tetap akurat dan realtime sekaligus bergerak mulus seperti jam analog sungguhan.
+  // Jam analog bergerak "detak" (tick) selaras dengan jam digital — dihitung ulang
+  // sekali setiap detik (bukan tiap frame animasi) memakai nilai detik/menit/jam bulat,
+  // sehingga jarum melompat pasti setiap detik seperti jam analog mekanik sungguhan.
   function updateAnalogClock(){
     var wib = nowWIB();
-    var ms = wib.getMilliseconds();
-    var secFrac = wib.getSeconds() + ms/1000;
-    var minFrac = wib.getMinutes() + secFrac/60;
-    var hourDeg = ((wib.getHours() % 12) + minFrac/60) * 30;
-    var minuteDeg = minFrac * 6;
-    var secondDeg = secFrac * 6;
+    var sec = wib.getSeconds();
+    var min = wib.getMinutes();
+    var hr = wib.getHours() % 12;
+    var hourDeg = (hr + min/60) * 30;
+    var minuteDeg = min * 6;
+    var secondDeg = sec * 6;
     hourHandEl.style.transform = "rotate(" + hourDeg + "deg)";
     minuteHandEl.style.transform = "rotate(" + minuteDeg + "deg)";
     secondHandEl.style.transform = "rotate(" + secondDeg + "deg)";
-    requestAnimationFrame(updateAnalogClock);
   }
 
   // Penjadwal detik yang menyelaraskan ulang ke waktu sistem sebenarnya setiap kali,
@@ -735,7 +736,6 @@
 
   render();
   scheduleNextTick();
-  requestAnimationFrame(updateAnalogClock);
 })();
 </script>
 </body>
