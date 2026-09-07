@@ -58,14 +58,11 @@
     .locname{justify-content:center;}
     .analog-wrap{display:flex;justify-content:center;}
 
-    .pickers{justify-content:center;}
-    .field{align-items:center;}
+    .pickers{flex-wrap:nowrap;justify-content:space-between;}
+    .pickers .field{flex:1;align-items:center;}
+    .pickers select{width:100%;min-width:0;}
 
     .next-card{text-align:center;}
-
-    .row{flex-direction:column;align-items:center;text-align:center;gap:6px;}
-    .row .names{justify-content:center;}
-    .row .meta{text-align:center;}
   }
 
   .left-col{display:flex;flex-direction:column;gap:22px;}
